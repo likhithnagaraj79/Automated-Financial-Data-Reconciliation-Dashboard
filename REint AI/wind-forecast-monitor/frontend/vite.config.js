@@ -12,4 +12,16 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        // split recharts into its own chunk so it can be cached separately
+        manualChunks: {
+          recharts: ['recharts'],
+          vendor: ['react', 'react-dom', 'axios'],
+        },
+      },
+    },
+  },
 })
