@@ -1,0 +1,55 @@
+TransactionID,Date,Department,AccountCode,AccountName,Description,Amount,Currency,CostCenter,DocumentType,PostingKey,Status,CreatedBy
+SAP-TXN-00001,2024-01-03,Finance,10001,Cash & Bank,Vendor Payment - Office Supplies,15420.50,USD,CC-FIN-01,KR,31,Posted,john.smith
+SAP-TXN-00002,2024-01-03,Operations,20001,Accounts Payable,Raw Material Purchase,87500.00,USD,CC-OPS-01,KR,31,Posted,mary.jones
+SAP-TXN-00003,2024-01-04,HR,30001,Salary & Wages,January Payroll - Batch 1,245000.00,USD,CC-HR-01,SA,40,Posted,hr.admin
+SAP-TXN-00004,2024-01-04,Finance,10002,Accounts Receivable,Customer Invoice - CUST-A101,62000.00,USD,CC-FIN-01,DR,01,Posted,john.smith
+SAP-TXN-00005,2024-01-05,IT,40001,IT Equipment,Server Upgrade Purchase,33800.00,USD,CC-IT-01,KR,31,Posted,it.procurement
+SAP-TXN-00006,2024-01-05,Operations,20002,Inventory,Stock Replenishment - Warehouse A,54200.00,USD,CC-OPS-02,WE,89,Posted,ops.manager
+SAP-TXN-00007,2024-01-08,Marketing,50001,Advertising Expense,Digital Campaign Q1,28750.00,USD,CC-MKT-01,KR,31,Posted,mkt.team
+SAP-TXN-00008,2024-01-08,Finance,10003,Bank Charges,Monthly Bank Service Fee,320.00,USD,CC-FIN-01,SA,40,Posted,finance.auto
+SAP-TXN-00009,2024-01-09,Legal,60001,Legal & Compliance,External Legal Counsel Fees,18500.00,USD,CC-LEG-01,KR,31,Posted,legal.admin
+SAP-TXN-00010,2024-01-09,Operations,20003,Utilities,Electricity - Manufacturing Plant,9870.00,USD,CC-OPS-01,KR,31,Posted,ops.admin
+SAP-TXN-00011,2024-01-10,Finance,10004,Petty Cash,Office Miscellaneous Expenses,1250.75,USD,CC-FIN-01,SA,40,Posted,john.smith
+SAP-TXN-00012,2024-01-10,Sales,70001,Commission Expense,Sales Commission - Q4 Payout,41600.00,USD,CC-SAL-01,SA,40,Posted,sales.hr
+SAP-TXN-00013,2024-01-11,IT,40002,Software Licenses,Annual SaaS Subscriptions,22400.00,USD,CC-IT-01,KR,31,Posted,it.procurement
+SAP-TXN-00014,2024-01-11,Operations,20004,Maintenance,Equipment Servicing,7800.00,USD,CC-OPS-03,KR,31,Posted,maint.team
+SAP-TXN-00015,2024-01-12,Finance,10001,Cash & Bank,Customer Payment Received - CUST-B202,-98500.00,USD,CC-FIN-01,DZ,15,Posted,ar.team
+SAP-TXN-00016,2024-01-12,HR,30002,Employee Benefits,Health Insurance Premium,38900.00,USD,CC-HR-01,SA,40,Posted,hr.admin
+SAP-TXN-00017,2024-01-15,Finance,10005,Prepaid Expenses,Insurance Premium - Annual,48000.00,USD,CC-FIN-01,SA,40,Posted,finance.ctrl
+SAP-TXN-00018,2024-01-15,Operations,20005,Freight & Logistics,Outbound Shipment - SHIP-201,14350.00,USD,CC-OPS-02,KR,31,Posted,logistics
+SAP-TXN-00019,2024-01-16,Marketing,50002,Events & Sponsorship,Industry Conference Sponsorship,35000.00,USD,CC-MKT-01,KR,31,Posted,mkt.team
+SAP-TXN-00020,2024-01-16,Finance,10002,Accounts Receivable,Customer Invoice - CUST-C303,75000.00,USD,CC-FIN-01,DR,01,Posted,john.smith
+SAP-TXN-00021,2024-01-17,IT,40003,Cloud Services,AWS Monthly Billing,18920.40,USD,CC-IT-01,KR,31,Posted,it.ops
+SAP-TXN-00022,2024-01-17,HR,30003,Training & Development,Employee Upskilling Program,12500.00,USD,CC-HR-02,KR,31,Posted,hr.training
+SAP-TXN-00023,2024-01-18,Operations,20001,Accounts Payable,Supplier Payment - SUPP-405,67800.00,USD,CC-OPS-01,ZP,29,Posted,ap.team
+SAP-TXN-00024,2024-01-18,Sales,70002,Travel Expense,Sales Team Travel - Q1,8940.00,USD,CC-SAL-01,SA,40,Posted,sales.admin
+SAP-TXN-00025,2024-01-19,Finance,10001,Cash & Bank,Intercompany Transfer - BU North,150000.00,USD,CC-FIN-01,SA,40,Posted,treasury
+SAP-TXN-00026,2024-01-19,Legal,60002,Regulatory Compliance,Audit & Compliance Fees,9500.00,USD,CC-LEG-01,KR,31,Posted,legal.admin
+SAP-TXN-00027,2024-01-22,Operations,20002,Inventory,Raw Material - Batch 2,92400.00,USD,CC-OPS-02,WE,89,Posted,ops.manager
+SAP-TXN-00028,2024-01-22,Marketing,50003,Digital Marketing,SEO & Content Agency,16800.00,USD,CC-MKT-02,KR,31,Posted,mkt.digital
+SAP-TXN-00029,2024-01-23,Finance,10003,Bank Charges,Wire Transfer Fees,185.00,USD,CC-FIN-01,SA,40,Posted,finance.auto
+SAP-TXN-00030,2024-01-23,IT,40001,IT Equipment,Laptop Fleet Refresh,44200.00,USD,CC-IT-02,KR,31,Posted,it.procurement
+SAP-TXN-00031,2024-01-24,HR,30001,Salary & Wages,January Payroll - Batch 2,198000.00,USD,CC-HR-01,SA,40,Posted,hr.admin
+SAP-TXN-00032,2024-01-24,Operations,20003,Utilities,Water & Gas - Manufacturing,4320.00,USD,CC-OPS-01,KR,31,Posted,ops.admin
+SAP-TXN-00033,2024-01-25,Finance,10004,Petty Cash,Courier & Postage,780.50,USD,CC-FIN-02,SA,40,Posted,office.admin
+SAP-TXN-00034,2024-01-25,Sales,70003,CRM & Tools,Salesforce Annual License,31500.00,USD,CC-SAL-02,KR,31,Posted,sales.ops
+SAP-TXN-00035,2024-01-26,Finance,10002,Accounts Receivable,Customer Invoice - CUST-D404,110000.00,USD,CC-FIN-01,DR,01,Posted,john.smith
+SAP-TXN-00036,2024-01-26,Operations,20004,Maintenance,HVAC System Repair,11200.00,USD,CC-OPS-03,KR,31,Posted,maint.team
+SAP-TXN-00037,2024-01-29,IT,40002,Software Licenses,Security Software Renewal,8900.00,USD,CC-IT-01,KR,31,Posted,it.security
+SAP-TXN-00038,2024-01-29,Marketing,50001,Advertising Expense,Print Media - Q1 Campaign,19500.00,USD,CC-MKT-01,KR,31,Posted,mkt.team
+SAP-TXN-00039,2024-01-30,Finance,10001,Cash & Bank,Customer Payment - CUST-C303,-75000.00,USD,CC-FIN-01,DZ,15,Posted,ar.team
+SAP-TXN-00040,2024-01-30,HR,30004,Contractor Payments,External Consultants - Jan,55000.00,USD,CC-HR-03,KR,31,Posted,hr.contracts
+SAP-TXN-00041,2024-01-31,Finance,10005,Prepaid Expenses,Rent - Corporate Office Feb,28500.00,USD,CC-FIN-01,SA,40,Posted,finance.ctrl
+SAP-TXN-00042,2024-01-31,Operations,20005,Freight & Logistics,Import Duties & Customs,6750.00,USD,CC-OPS-02,KR,31,Posted,logistics
+SAP-TXN-00043,2024-02-01,Finance,10001,Cash & Bank,Opening Balance Adjustment,2500.00,USD,CC-FIN-01,SA,40,Posted,finance.ctrl
+SAP-TXN-00044,2024-02-01,Operations,20001,Accounts Payable,Supplier Invoice - SUPP-601,43000.00,USD,CC-OPS-01,KR,31,Posted,ap.team
+SAP-TXN-00045,2024-02-02,Sales,70001,Commission Expense,February Commission Accrual,38200.00,USD,CC-SAL-01,SA,40,Posted,sales.hr
+SAP-TXN-00046,2024-02-02,IT,40003,Cloud Services,Azure Monthly Billing,15670.80,USD,CC-IT-01,KR,31,Posted,it.ops
+SAP-TXN-00047,2024-02-05,Finance,10002,Accounts Receivable,Customer Invoice - CUST-E505,88000.00,USD,CC-FIN-01,DR,01,Posted,john.smith
+SAP-TXN-00048,2024-02-05,HR,30002,Employee Benefits,Dental & Vision Insurance,12400.00,USD,CC-HR-01,SA,40,Posted,hr.admin
+SAP-TXN-00049,2024-02-06,Marketing,50004,Market Research,Consumer Survey - Q1,14000.00,USD,CC-MKT-02,KR,31,Posted,mkt.research
+SAP-TXN-00050,2024-02-06,Operations,20002,Inventory,Finished Goods - Transfer,71500.00,USD,CC-OPS-02,WE,89,Posted,ops.manager
+SAP-TXN-ERROR-01,2024-01-14,,20001,Accounts Payable,Missing Department Code,25000.00,USD,CC-OPS-01,KR,31,Error,ap.team
+SAP-TXN-ERROR-02,2024-01-20,Finance,,Petty Cash,Missing Account Code,3400.00,USD,CC-FIN-01,SA,40,Error,finance.ctrl
+SAP-TXN-ERROR-03,2024-01-28,Operations,20003,Utilities,,8900.00,USD,CC-OPS-01,KR,31,Error,ops.admin
+SAP-TXN-DUP-01,2024-01-10,Finance,10004,Petty Cash,Office Miscellaneous Expenses,1250.75,USD,CC-FIN-01,SA,40,Duplicate,john.smith

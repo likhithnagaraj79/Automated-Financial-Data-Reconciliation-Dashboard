@@ -1,0 +1,17 @@
+InvoiceID,CustomerID,CustomerName,CustomerSegment,InvoiceDate,DueDate,InvoiceAmount,TaxAmount,TotalAmount,PaymentReceived,OutstandingBalance,Currency,PaymentTerms,SalesRep,Department,Region,ReconciliationStatus,SAP_DocumentRef,CollectionNotes
+AR-2024-0001,CUST-A101,Alpha Tech Solutions,Enterprise,2024-01-04,2024-02-03,62000.00,0.00,62000.00,62000.00,0.00,USD,NET-30,rep.smith,Sales,North America,Reconciled,SAP-TXN-00004,Paid on time
+AR-2024-0002,CUST-B202,Alpha Corporation,Large,2024-01-12,2024-01-26,98500.00,0.00,98500.00,98500.00,0.00,USD,NET-14,rep.jones,Sales,North America,Reconciled,SAP-TXN-00015,Paid 3 days early
+AR-2024-0003,CUST-C303,Nexus Solutions Ltd,Mid-Market,2024-01-20,2024-02-19,75000.00,0.00,75000.00,75000.00,0.00,USD,NET-30,rep.wilson,Sales,Europe,Reconciled,SAP-TXN-00020,Paid on due date
+AR-2024-0004,CUST-D404,Delta Manufacturing,Enterprise,2024-01-26,2024-02-25,110000.00,0.00,110000.00,0.00,110000.00,USD,NET-30,rep.smith,Sales,North America,Open,,Due Feb 25 - within terms
+AR-2024-0005,CUST-E505,Pinnacle Corporation,Large,2024-02-05,2024-03-06,88000.00,0.00,88000.00,88000.00,0.00,USD,NET-30,rep.brown,Sales,Asia Pacific,Reconciled,SAP-TXN-00047,Paid promptly
+AR-2024-0006,CUST-F606,Frontier Logistics,SMB,2024-01-08,2024-01-22,28500.00,0.00,28500.00,28500.00,0.00,USD,NET-14,rep.davis,Sales,North America,Reconciled,,Standard invoice
+AR-2024-0007,CUST-G707,GlobalTrade Inc,Enterprise,2024-01-10,2024-02-09,185000.00,0.00,185000.00,185000.00,0.00,USD,NET-30,rep.miller,Sales,Europe,Reconciled,,Large order - Q1 contract
+AR-2024-0008,CUST-H808,Horizon Health,Large,2024-01-15,2024-02-14,52000.00,0.00,52000.00,52000.00,0.00,USD,NET-30,rep.jones,Sales,North America,Reconciled,,Healthcare segment
+AR-2024-0009,CUST-I909,InnovateTech Corp,Mid-Market,2024-01-18,2024-02-01,41500.00,0.00,41500.00,41500.00,0.00,USD,NET-14,rep.wilson,Sales,Asia Pacific,Reconciled,,Recurring customer
+AR-2024-0010,CUST-J010,Jupiter Retail,SMB,2024-01-22,2024-02-05,18750.00,0.00,18750.00,0.00,18750.00,USD,NET-14,rep.davis,Sales,North America,Overdue,,Overdue 20 days - 1st reminder sent
+AR-2024-0011,CUST-K111,Keystone Partners,Large,2024-01-25,2024-02-08,67000.00,0.00,67000.00,0.00,67000.00,USD,NET-14,rep.brown,Sales,Europe,Overdue,,Overdue 17 days - escalated to credit mgmt
+AR-2024-0012,CUST-L212,Liberty Financial,Enterprise,2024-01-29,2024-02-12,220000.00,0.00,220000.00,110000.00,110000.00,USD,NET-14,rep.smith,Sales,North America,Partial Payment,,50% paid - payment plan agreed
+AR-2024-0013,CUST-M313,Meridian Group,Mid-Market,2024-02-01,2024-03-02,35000.00,0.00,35000.00,0.00,35000.00,USD,NET-30,rep.miller,Sales,North America,Open,,Within payment terms
+AR-2024-0014,CUST-N414,Nordic Shipping AS,Large,2024-01-31,2024-03-01,92000.00,0.00,92000.00,0.00,92000.00,USD,NET-30,rep.wilson,Sales,Europe,Open,,Within terms - expect on-time payment
+AR-2024-0015,CUST-O515,Omni Distribution,SMB,2024-01-16,2024-01-30,14200.00,0.00,14200.00,14200.00,0.00,USD,NET-14,rep.davis,Sales,North America,Reconciled,,Paid on time
+AR-CREDIT-001,CUST-B202,Alpha Corporation,Large,2024-01-27,2024-01-27,-2800.00,0.00,-2800.00,-2800.00,0.00,USD,Immediate,rep.jones,Sales,North America,Reconciled,BANK-UNMATCHED-002,Credit note - returned goods

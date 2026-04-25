@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AlteryxDocument yxmdVer="2023.2">
+  <!-- ============================================================
+       Workflow: Automated Financial Data Reconciliation
+       Author  : Financial Analytics Team
+       Version : 1.0
+       Purpose : ETL pipeline to reconcile financial data from
+                 5 source systems and output clean, matched records
+       ============================================================ -->
+
+  <Nodes>
+
+    <!-- ==================== INPUT NODES ==================== -->
+
+    <!-- Node 1: SAP Transactions Input -->
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">
+            ..\data\source\sap_transactions.csv
+          </File>
+          <ForceToString value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>SAP Transactions</Name>
+          <DefaultAnnotationText>Read SAP transaction data</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 2: Manual Journal Entries Input -->
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">
+            ..\data\source\manual_journal_entries.csv
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Journal Entries</Name>
+          <DefaultAnnotationText>Read Manual Journal Entry data</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 3: Bank Statements Input -->
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">
+            ..\data\source\bank_statements.csv
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Bank Statements</Name>
+          <DefaultAnnotationText>Read Bank Statement data from Citibank</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 4: Accounts Payable Input -->
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="378" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">
+            ..\data\source\accounts_payable.csv
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Accounts Payable</Name>
+          <DefaultAnnotationText>Read AP invoice data</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 5: Budget Allocations Input -->
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="486" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">
+            ..\data\source\budget_allocations.csv
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Budget Allocations</Name>
+          <DefaultAnnotationText>Read Budget data by department</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 6: Accounts Receivable Input -->
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="594" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">
+            ..\data\source\accounts_receivable.csv
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Accounts Receivable</Name>
+          <DefaultAnnotationText>Read AR invoice data</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== DATA CLEANSING NODES ==================== -->
+
+    <!-- Node 10: Cleanse SAP Transactions -->
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxDataCleansing.AlteryxDataCleansing">
+        <Position x="216" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NullOrEmptyFields>
+            <NullifyEmptyFields value="True" />
+            <ReplaceNullsWithBlanks value="False" />
+          </NullOrEmptyFields>
+          <LeadingTrailingWhiteSpace>
+            <TrimWhiteSpace value="True" />
+            <RemoveAllWhiteSpace value="False" />
+          </LeadingTrailingWhiteSpace>
+          <ModifyCase>
+            <UpperCase value="False" />
+            <LowerCase value="False" />
+            <TitleCase value="False" />
+          </ModifyCase>
+          <RemoveDuplicates value="True" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Cleanse SAP Data</Name>
+          <DefaultAnnotationText>Remove nulls, trim whitespace, flag duplicates</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 11: Cleanse Journal Entries -->
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxDataCleansing.AlteryxDataCleansing">
+        <Position x="216" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NullOrEmptyFields>
+            <NullifyEmptyFields value="True" />
+          </NullOrEmptyFields>
+          <LeadingTrailingWhiteSpace>
+            <TrimWhiteSpace value="True" />
+          </LeadingTrailingWhiteSpace>
+          <RemoveDuplicates value="True" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Cleanse Journal Data</Name>
+          <DefaultAnnotationText>Standardize journal entry records</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 12: Cleanse Bank Statements -->
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxDataCleansing.AlteryxDataCleansing">
+        <Position x="216" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NullOrEmptyFields>
+            <NullifyEmptyFields value="True" />
+          </NullOrEmptyFields>
+          <LeadingTrailingWhiteSpace>
+            <TrimWhiteSpace value="True" />
+          </LeadingTrailingWhiteSpace>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Cleanse Bank Data</Name>
+          <DefaultAnnotationText>Cleanse and standardize bank statement records</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== SELECT / RENAME NODES ==================== -->
+
+    <!-- Node 20: Select SAP Fields -->
+    <Node ToolID="20">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="378" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SelectFields>
+            <SelectField field="TransactionID" selected="True" rename="SAP_TransactionID" />
+            <SelectField field="Date" selected="True" rename="Transaction_Date" type="Date" />
+            <SelectField field="Department" selected="True" rename="Department" />
+            <SelectField field="AccountCode" selected="True" rename="Account_Code" />
+            <SelectField field="AccountName" selected="True" rename="Account_Name" />
+            <SelectField field="Description" selected="True" rename="Description" />
+            <SelectField field="Amount" selected="True" rename="Transaction_Amount" type="Double" />
+            <SelectField field="Currency" selected="True" rename="Currency" />
+            <SelectField field="CostCenter" selected="True" rename="Cost_Center" />
+            <SelectField field="Status" selected="True" rename="SAP_Status" />
+            <SelectField field="DocumentType" selected="False" />
+            <SelectField field="PostingKey" selected="False" />
+            <SelectField field="CreatedBy" selected="True" rename="Created_By" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Select SAP Fields</Name>
+          <DefaultAnnotationText>Select relevant SAP columns and standardize field names</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 21: Select Bank Statement Fields -->
+    <Node ToolID="21">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="378" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SelectFields>
+            <SelectField field="BankRef" selected="True" rename="Bank_Reference" />
+            <SelectField field="ValueDate" selected="True" rename="Transaction_Date" type="Date" />
+            <SelectField field="Description" selected="True" rename="Bank_Description" />
+            <SelectField field="DebitAmount" selected="True" rename="Bank_Debit" type="Double" />
+            <SelectField field="CreditAmount" selected="True" rename="Bank_Credit" type="Double" />
+            <SelectField field="RunningBalance" selected="True" rename="Running_Balance" type="Double" />
+            <SelectField field="TransactionType" selected="True" rename="Bank_TxnType" />
+            <SelectField field="Reference" selected="True" rename="SAP_Reference" />
+            <SelectField field="Counterparty" selected="True" rename="Counterparty" />
+            <SelectField field="ReconciliationStatus" selected="True" rename="Bank_Recon_Status" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Select Bank Fields</Name>
+          <DefaultAnnotationText>Select bank statement columns for matching</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== FILTER NODES ==================== -->
+
+    <!-- Node 30: Filter Valid SAP Transactions -->
+    <Node ToolID="30">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFilter.AlteryxFilter">
+        <Position x="540" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>[SAP_Status] = "Posted" AND NOT IsNull([Department]) AND NOT IsNull([Account_Code])</Expression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Filter Valid SAP Txns</Name>
+          <DefaultAnnotationText>T: Posted + complete records | F: Errors/Duplicates → Exception report</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 31: Filter Approved Journal Entries -->
+    <Node ToolID="31">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFilter.AlteryxFilter">
+        <Position x="540" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>[Status] = "Approved"</Expression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Filter Approved Journals</Name>
+          <DefaultAnnotationText>T: Approved entries only | F: Pending/Rejected → Review queue</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 32: Filter Unmatched Bank Transactions -->
+    <Node ToolID="32">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFilter.AlteryxFilter">
+        <Position x="540" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>[Bank_Recon_Status] = "Unmatched"</Expression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Isolate Unmatched Bank Txns</Name>
+          <DefaultAnnotationText>T: Unmatched items → Exception output | F: Matched items → Main flow</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 33: Filter AP Exceptions -->
+    <Node ToolID="33">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFilter.AlteryxFilter">
+        <Position x="378" y="378" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>[PaymentStatus] IN ("Overdue", "On Hold") OR [ApprovalStatus] IN ("Disputed", "Not Approved")</Expression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Filter AP Exceptions</Name>
+          <DefaultAnnotationText>T: Exceptions (overdue/disputed) | F: Normal AP records</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 34: Filter Budget Variances > 20% -->
+    <Node ToolID="34">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFilter.AlteryxFilter">
+        <Position x="378" y="486" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>ABS([VariancePct]) > 20 OR [Status] = "Exception"</Expression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Flag Budget Exceptions</Name>
+          <DefaultAnnotationText>T: Variance &gt; 20% → Exception | F: Within tolerance</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== FORMULA NODES ==================== -->
+
+    <!-- Node 40: SAP Calculated Fields -->
+    <Node ToolID="40">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFormula.AlteryxFormula">
+        <Position x="702" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField field="Abs_Amount" size="8" type="Double"
+              expression="ABS([Transaction_Amount])" />
+            <FormulaField field="Transaction_Month" size="2" type="Int16"
+              expression="Month([Transaction_Date])" />
+            <FormulaField field="Transaction_Year" size="4" type="Int16"
+              expression="Year([Transaction_Date])" />
+            <FormulaField field="Transaction_Quarter" size="2" type="String"
+              expression="IF Month([Transaction_Date]) &lt;= 3 THEN &quot;Q1&quot; ELSEIF Month([Transaction_Date]) &lt;= 6 THEN &quot;Q2&quot; ELSEIF Month([Transaction_Date]) &lt;= 9 THEN &quot;Q3&quot; ELSE &quot;Q4&quot; ENDIF" />
+            <FormulaField field="Is_Debit" size="1" type="Bool"
+              expression="[Transaction_Amount] > 0" />
+            <FormulaField field="Source_System" size="10" type="String"
+              expression="&quot;SAP&quot;" />
+            <FormulaField field="Record_Load_Date" size="10" type="Date"
+              expression="DateTimeToDate(DateTimeNow())" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>SAP Calculated Fields</Name>
+          <DefaultAnnotationText>Add quarter, month, year, debit flag, source system tag</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 41: AP Calculated Fields -->
+    <Node ToolID="41">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFormula.AlteryxFormula">
+        <Position x="540" y="378" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField field="DaysOverdue" size="4" type="Int16"
+              expression="IF [PaymentStatus] = &quot;Overdue&quot; THEN DateTimeDiff(DateTimeToDate(DateTimeNow()), [DueDate], &quot;days&quot;) ELSE 0 ENDIF" />
+            <FormulaField field="Aging_Bucket" size="20" type="String"
+              expression="IF [OutstandingAmount] = 0 THEN &quot;Cleared&quot; ELSEIF DateTimeDiff(DateTimeToDate(DateTimeNow()), [DueDate], &quot;days&quot;) &lt;= 0 THEN &quot;Current&quot; ELSEIF DateTimeDiff(DateTimeToDate(DateTimeNow()), [DueDate], &quot;days&quot;) &lt;= 30 THEN &quot;1-30 Days&quot; ELSEIF DateTimeDiff(DateTimeToDate(DateTimeNow()), [DueDate], &quot;days&quot;) &lt;= 60 THEN &quot;31-60 Days&quot; ELSE &quot;60+ Days&quot; ENDIF" />
+            <FormulaField field="PO_Matched" size="1" type="Bool"
+              expression="NOT IsNull([PurchaseOrderRef]) AND [PurchaseOrderRef] != &quot;PO-NONE&quot; AND [PurchaseOrderRef] != &quot;NONE&quot;" />
+            <FormulaField field="SAP_Matched" size="1" type="Bool"
+              expression="NOT IsNull([SAP_DocumentRef])" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>AP Calculated Fields</Name>
+          <DefaultAnnotationText>Calculate days overdue, aging buckets, PO match flag</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 42: Budget Variance Fields -->
+    <Node ToolID="42">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxFormula.AlteryxFormula">
+        <Position x="540" y="486" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField field="Variance_Label" size="20" type="String"
+              expression="IF [VariancePct] > 0 THEN &quot;Under Budget&quot; ELSEIF [VariancePct] &lt; 0 THEN &quot;Over Budget&quot; ELSE &quot;On Budget&quot; ENDIF" />
+            <FormulaField field="Variance_Severity" size="10" type="String"
+              expression="IF ABS([VariancePct]) > 30 THEN &quot;High&quot; ELSEIF ABS([VariancePct]) > 15 THEN &quot;Medium&quot; ELSE &quot;Low&quot; ENDIF" />
+            <FormulaField field="Utilization_Rate" size="8" type="Double"
+              expression="IF [RevisedBudget] > 0 THEN [ActualSpend] / [RevisedBudget] * 100 ELSE 0 ENDIF" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Budget Variance Fields</Name>
+          <DefaultAnnotationText>Add variance labels, severity flags, utilization rate</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== JOIN NODES ==================== -->
+
+    <!-- Node 50: Join SAP with Bank Statements (Reconciliation Match) -->
+    <Node ToolID="50">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxJoin.AlteryxJoin">
+        <Position x="864" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <JoinInfo connection="Left">
+            <Field field="SAP_TransactionID" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="SAP_Reference" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <SelectFields>
+              <SelectField field="SAP_TransactionID" selected="True" />
+              <SelectField field="Transaction_Date" selected="True" />
+              <SelectField field="Department" selected="True" />
+              <SelectField field="Account_Code" selected="True" />
+              <SelectField field="Transaction_Amount" selected="True" />
+              <SelectField field="SAP_Status" selected="True" />
+              <SelectField field="Source_System" selected="True" />
+              <SelectField field="Transaction_Quarter" selected="True" />
+              <SelectField field="Bank_Reference" selected="True" />
+              <SelectField field="Bank_Debit" selected="True" />
+              <SelectField field="Bank_Credit" selected="True" />
+              <SelectField field="Counterparty" selected="True" />
+              <SelectField field="Bank_Recon_Status" selected="True" />
+            </SelectFields>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>SAP vs Bank Recon</Name>
+          <DefaultAnnotationText>Join: J=Matched | L=SAP Only (missing bank) | R=Bank Only (missing SAP)</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 51: Join SAP with AP Invoices -->
+    <Node ToolID="51">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxJoin.AlteryxJoin">
+        <Position x="864" y="378" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <JoinInfo connection="Left">
+            <Field field="SAP_TransactionID" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="SAP_DocumentRef" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <SelectFields>
+              <SelectField field="SAP_TransactionID" selected="True" />
+              <SelectField field="Transaction_Date" selected="True" />
+              <SelectField field="Department" selected="True" />
+              <SelectField field="Transaction_Amount" selected="True" />
+              <SelectField field="InvoiceID" selected="True" />
+              <SelectField field="VendorName" selected="True" />
+              <SelectField field="TotalAmount" selected="True" />
+              <SelectField field="ApprovalStatus" selected="True" />
+              <SelectField field="PaymentStatus" selected="True" />
+              <SelectField field="PO_Matched" selected="True" />
+              <SelectField field="SAP_Matched" selected="True" />
+              <SelectField field="DaysOverdue" selected="True" />
+              <SelectField field="Aging_Bucket" selected="True" />
+            </SelectFields>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>SAP vs AP Invoices</Name>
+          <DefaultAnnotationText>Match SAP payments to AP invoices for 3-way PO match validation</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== SUMMARIZE NODES ==================== -->
+
+    <!-- Node 60: Summarize Reconciliation by Department -->
+    <Node ToolID="60">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSummarize.AlteryxSummarize">
+        <Position x="1026" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Department" action="GroupBy" />
+            <SummarizeField field="Transaction_Quarter" action="GroupBy" />
+            <SummarizeField field="Bank_Recon_Status" action="GroupBy" />
+            <SummarizeField field="SAP_TransactionID" action="Count" rename="Transaction_Count" />
+            <SummarizeField field="Transaction_Amount" action="Sum" rename="Total_Amount" />
+            <SummarizeField field="Transaction_Amount" action="Avg" rename="Avg_Transaction" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Dept Reconciliation Summary</Name>
+          <DefaultAnnotationText>Aggregate matched/unmatched counts and amounts by department and quarter</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 61: Summarize AP Aging -->
+    <Node ToolID="61">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSummarize.AlteryxSummarize">
+        <Position x="1026" y="378" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Department" action="GroupBy" />
+            <SummarizeField field="Aging_Bucket" action="GroupBy" />
+            <SummarizeField field="PaymentStatus" action="GroupBy" />
+            <SummarizeField field="InvoiceID" action="Count" rename="Invoice_Count" />
+            <SummarizeField field="TotalAmount" action="Sum" rename="Total_Invoice_Amount" />
+            <SummarizeField field="OutstandingAmount" action="Sum" rename="Total_Outstanding" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>AP Aging Summary</Name>
+          <DefaultAnnotationText>Summarize AP outstanding amounts by department and aging bucket</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 62: Summarize Budget vs Actual -->
+    <Node ToolID="62">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSummarize.AlteryxSummarize">
+        <Position x="702" y="486" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Department" action="GroupBy" />
+            <SummarizeField field="Quarter" action="GroupBy" />
+            <SummarizeField field="Category" action="GroupBy" />
+            <SummarizeField field="Variance_Label" action="GroupBy" />
+            <SummarizeField field="Variance_Severity" action="GroupBy" />
+            <SummarizeField field="BudgetAmount" action="Sum" rename="Total_Budget" />
+            <SummarizeField field="RevisedBudget" action="Sum" rename="Total_Revised_Budget" />
+            <SummarizeField field="ActualSpend" action="Sum" rename="Total_Actual" />
+            <SummarizeField field="Variance" action="Sum" rename="Total_Variance" />
+            <SummarizeField field="Utilization_Rate" action="Avg" rename="Avg_Utilization_Pct" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Budget vs Actual Summary</Name>
+          <DefaultAnnotationText>Aggregate budget, actual, and variance by department and category</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== PYTHON TOOL (ADVANCED CLEANSING) ==================== -->
+
+    <!-- Node 70: Python Advanced Cleansing -->
+    <Node ToolID="70">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxPythonTool.AlteryxPythonTool">
+        <Position x="1188" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Script><![CDATA[
+# Alteryx Python Tool - Advanced Reconciliation Logic
+# This script receives the summarized reconciliation data
+# and applies advanced matching and scoring logic
+
+import pandas as pd
+import numpy as np
+from ayx import Alteryx
+
+# Read incoming data streams
+reconciliation_df = Alteryx.read("#1")  # Reconciliation summary
+ap_aging_df = Alteryx.read("#2")        # AP aging summary
+
+# ---- Reconciliation Matching Score ----
+def calculate_match_score(row):
+    score = 100
+    if row.get('Bank_Recon_Status') == 'Unmatched':
+        score -= 40
+    if row.get('SAP_Status') == 'Error':
+        score -= 30
+    if row.get('PO_Matched') == False:
+        score -= 15
+    if row.get('SAP_Matched') == False:
+        score -= 15
+    return max(score, 0)
+
+# ---- Flag high-risk records ----
+def assign_risk_tier(score):
+    if score >= 90:
+        return 'Low Risk'
+    elif score >= 70:
+        return 'Medium Risk'
+    else:
+        return 'High Risk'
+
+# Apply scoring
+reconciliation_df['Match_Score'] = reconciliation_df.apply(calculate_match_score, axis=1)
+reconciliation_df['Risk_Tier'] = reconciliation_df['Match_Score'].apply(assign_risk_tier)
+
+# ---- Duplicate detection using hash ----
+key_cols = ['Transaction_Amount', 'Department', 'Transaction_Date']
+if all(c in reconciliation_df.columns for c in key_cols):
+    reconciliation_df['Dedup_Key'] = (
+        reconciliation_df['Transaction_Amount'].astype(str) + '|' +
+        reconciliation_df['Department'].astype(str) + '|' +
+        reconciliation_df['Transaction_Date'].astype(str)
+    )
+    reconciliation_df['Is_Duplicate'] = reconciliation_df.duplicated(subset='Dedup_Key', keep='first')
+    reconciliation_df.drop(columns=['Dedup_Key'], inplace=True)
+
+# ---- Reconciliation Rate KPI ----
+if 'Transaction_Count' in reconciliation_df.columns:
+    total = reconciliation_df['Transaction_Count'].sum()
+    matched = reconciliation_df[
+        reconciliation_df.get('Bank_Recon_Status', pd.Series()) == 'Matched'
+    ]['Transaction_Count'].sum()
+    recon_rate = (matched / total * 100) if total > 0 else 0
+    reconciliation_df['Recon_Rate_Pct'] = round(recon_rate, 2)
+
+# ---- Output results ----
+Alteryx.write(reconciliation_df, 1)   # Main reconciled output
+Alteryx.write(ap_aging_df, 2)          # AP aging output
+          ]]></Script>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Advanced Recon Logic (Python)</Name>
+          <DefaultAnnotationText>Match scoring, risk tiering, duplicate detection, KPI calculation</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- ==================== OUTPUT NODES ==================== -->
+
+    <!-- Node 80: Output Reconciled Transactions -->
+    <Node ToolID="80">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="1350" y="108" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File FileFormat="0" MaxRecords="" FilePath="..\data\output\reconciled_transactions.csv">
+            <FormatSpecificOptions>
+              <FirstRowData value="True" />
+              <Delimeter value="," />
+              <QuoteAll value="False" />
+              <CodePage value="28591" />
+              <WriteBOM value="True" />
+            </FormatSpecificOptions>
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Output: Reconciled Transactions</Name>
+          <DefaultAnnotationText>Write matched and reconciled records to CSV for Power BI</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 81: Output Exception Report -->
+    <Node ToolID="81">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="1350" y="216" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File FileFormat="0" MaxRecords="" FilePath="..\data\output\exception_report.csv">
+            <FormatSpecificOptions>
+              <FirstRowData value="True" />
+              <Delimeter value="," />
+            </FormatSpecificOptions>
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Output: Exception Report</Name>
+          <DefaultAnnotationText>Write all flagged exceptions for review and approval workflow</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 82: Output AP Aging Report -->
+    <Node ToolID="82">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="1350" y="378" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File FileFormat="0" MaxRecords="" FilePath="..\data\output\ap_aging_report.csv" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Output: AP Aging Report</Name>
+          <DefaultAnnotationText>Write AP aging summary for cash flow forecasting</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 83: Output Budget vs Actual -->
+    <Node ToolID="83">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="864" y="540" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File FileFormat="0" MaxRecords="" FilePath="..\data\output\budget_vs_actual.csv" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Output: Budget vs Actual</Name>
+          <DefaultAnnotationText>Write budget variance report by department and category</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+    <!-- Node 84: Output to SQL Database -->
+    <Node ToolID="84">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="1350" y="486" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File FileFormat="SQLite" FilePath="..\data\output\financial_reconciliation.db">
+            <FormatSpecificOptions>
+              <TableName value="reconciled_transactions" />
+              <OutputOptions value="Overwrite" />
+            </FormatSpecificOptions>
+          </File>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Output: SQLite DB</Name>
+          <DefaultAnnotationText>Write to SQLite for persistent storage and Power BI direct query</DefaultAnnotationText>
+        </Annotation>
+      </Properties>
+    </Node>
+
+  </Nodes>
+
+  <!-- ==================== CONNECTIONS ==================== -->
+  <Connections>
+    <!-- Input → Cleanse -->
+    <Connection><Origin ToolID="1" connection="Output" /><Destination ToolID="10" connection="Input" /></Connection>
+    <Connection><Origin ToolID="2" connection="Output" /><Destination ToolID="11" connection="Input" /></Connection>
+    <Connection><Origin ToolID="3" connection="Output" /><Destination ToolID="12" connection="Input" /></Connection>
+
+    <!-- Cleanse → Select -->
+    <Connection><Origin ToolID="10" connection="Output" /><Destination ToolID="20" connection="Input" /></Connection>
+    <Connection><Origin ToolID="12" connection="Output" /><Destination ToolID="21" connection="Input" /></Connection>
+
+    <!-- Select → Filter (SAP) -->
+    <Connection><Origin ToolID="20" connection="Output" /><Destination ToolID="30" connection="Input" /></Connection>
+    <!-- Cleanse → Filter (Journals) -->
+    <Connection><Origin ToolID="11" connection="Output" /><Destination ToolID="31" connection="Input" /></Connection>
+    <!-- Select → Filter (Bank) -->
+    <Connection><Origin ToolID="21" connection="Output" /><Destination ToolID="32" connection="Input" /></Connection>
+    <!-- Input AP → Filter AP -->
+    <Connection><Origin ToolID="4" connection="Output" /><Destination ToolID="33" connection="Input" /></Connection>
+    <!-- Input Budget → Filter Budget -->
+    <Connection><Origin ToolID="5" connection="Output" /><Destination ToolID="34" connection="Input" /></Connection>
+
+    <!-- Filter → Formula (SAP valid → formula) -->
+    <Connection><Origin ToolID="30" connection="True" /><Destination ToolID="40" connection="Input" /></Connection>
+    <!-- Filter → Formula (AP normal → formula) -->
+    <Connection><Origin ToolID="33" connection="False" /><Destination ToolID="41" connection="Input" /></Connection>
+    <!-- Filter → Formula (Budget all → formula) -->
+    <Connection><Origin ToolID="34" connection="False" /><Destination ToolID="42" connection="Input" /></Connection>
+
+    <!-- Formula (SAP) + Filter (Bank Matched) → Join (Reconciliation) -->
+    <Connection><Origin ToolID="40" connection="Output" /><Destination ToolID="50" connection="Left" /></Connection>
+    <Connection><Origin ToolID="32" connection="False" /><Destination ToolID="50" connection="Right" /></Connection>
+
+    <!-- Formula (AP) → Join (SAP vs AP) -->
+    <Connection><Origin ToolID="40" connection="Output" /><Destination ToolID="51" connection="Left" /></Connection>
+    <Connection><Origin ToolID="41" connection="Output" /><Destination ToolID="51" connection="Right" /></Connection>
+
+    <!-- Join → Summarize -->
+    <Connection><Origin ToolID="50" connection="Join" /><Destination ToolID="60" connection="Input" /></Connection>
+    <Connection><Origin ToolID="51" connection="Join" /><Destination ToolID="61" connection="Input" /></Connection>
+    <!-- Formula Budget → Summarize Budget -->
+    <Connection><Origin ToolID="42" connection="Output" /><Destination ToolID="62" connection="Input" /></Connection>
+
+    <!-- Summarize → Python Tool -->
+    <Connection><Origin ToolID="60" connection="Output" /><Destination ToolID="70" connection="Input1" /></Connection>
+    <Connection><Origin ToolID="61" connection="Output" /><Destination ToolID="70" connection="Input2" /></Connection>
+
+    <!-- Python → Output (Reconciled) -->
+    <Connection><Origin ToolID="70" connection="Output1" /><Destination ToolID="80" connection="Input" /></Connection>
+    <Connection><Origin ToolID="70" connection="Output1" /><Destination ToolID="84" connection="Input" /></Connection>
+
+    <!-- Exceptions → Exception Report Output -->
+    <Connection><Origin ToolID="30" connection="False" /><Destination ToolID="81" connection="Input" /></Connection>
+    <Connection><Origin ToolID="32" connection="True" /><Destination ToolID="81" connection="Input" /></Connection>
+    <Connection><Origin ToolID="33" connection="True" /><Destination ToolID="81" connection="Input" /></Connection>
+    <Connection><Origin ToolID="34" connection="True" /><Destination ToolID="81" connection="Input" /></Connection>
+
+    <!-- AP Aging → Output -->
+    <Connection><Origin ToolID="70" connection="Output2" /><Destination ToolID="82" connection="Input" /></Connection>
+
+    <!-- Budget Summary → Output -->
+    <Connection><Origin ToolID="62" connection="Output" /><Destination ToolID="83" connection="Input" /></Connection>
+  </Connections>
+
+  <!-- ==================== WORKFLOW METADATA ==================== -->
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>financial_reconciliation</Name>
+      <Description>Automated Financial Data Reconciliation Workflow - Deloitte Shared Services
+
+Processes 5+ data sources: SAP ERP, Manual Journal Entries, Bank Statements, Accounts Payable, Budget Allocations.
+Applies data cleansing, validation, 3-way matching, exception flagging, and Python-based scoring.
+Outputs: Reconciled dataset, Exception Report, AP Aging Report, Budget vs Actual — all feeding Power BI dashboard.</Description>
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryCsv />
+      <SearchTags>reconciliation,financial,ETL,Deloitte,shared services,SAP,bank,AP,budget</SearchTags>
+      <Author>Financial Analytics Team</Author>
+      <Company>Deloitte - Shared Services</Company>
+      <Copyright>2024</Copyright>
+      <ExtHelp />
+      <ReleaseDate />
+    </MetaInfo>
+  </Properties>
+
+</AlteryxDocument>

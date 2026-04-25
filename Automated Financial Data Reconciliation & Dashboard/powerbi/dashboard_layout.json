@@ -1,0 +1,558 @@
+{
+  "dashboardName": "Automated Financial Data Reconciliation Dashboard",
+  "version": "1.0",
+  "company": "Deloitte - Shared Services",
+  "theme": {
+    "name": "Deloitte Corporate",
+    "primaryColor": "#86BC25",
+    "secondaryColor": "#0D2B4E",
+    "accentColor": "#00A3E0",
+    "backgroundColor": "#F5F5F5",
+    "cardBackground": "#FFFFFF",
+    "fontFamily": "Open Sans",
+    "dangerColor": "#D13438",
+    "warningColor": "#FF8C00",
+    "successColor": "#107C10"
+  },
+
+  "pages": [
+    {
+      "pageId": "page-1",
+      "pageName": "Executive Summary",
+      "pageOrder": 1,
+      "description": "C-Suite overview with KPIs and high-level reconciliation status",
+
+      "visuals": [
+        {
+          "visualId": "card-01",
+          "type": "Card",
+          "title": "Reconciliation Rate",
+          "measure": "Reconciliation Rate %",
+          "position": { "x": 20, "y": 80, "width": 200, "height": 100 },
+          "format": { "fontSize": 32, "conditionalColor": "Recon Rate Color", "suffix": "%" }
+        },
+        {
+          "visualId": "card-02",
+          "type": "Card",
+          "title": "Total Transactions",
+          "measure": "Total Transactions",
+          "position": { "x": 240, "y": 80, "width": 200, "height": 100 },
+          "format": { "fontSize": 28, "thousandsSeparator": true }
+        },
+        {
+          "visualId": "card-03",
+          "type": "Card",
+          "title": "Exceptions",
+          "measure": "Exception Count",
+          "position": { "x": 460, "y": 80, "width": 200, "height": 100 },
+          "format": { "fontSize": 28, "conditionalColor": "Exception Color" }
+        },
+        {
+          "visualId": "card-04",
+          "type": "Card",
+          "title": "Total Variance Value",
+          "measure": "Total Variance Amount",
+          "position": { "x": 680, "y": 80, "width": 200, "height": 100 },
+          "format": { "prefix": "$", "fontSize": 24 }
+        },
+        {
+          "visualId": "card-05",
+          "type": "Card",
+          "title": "AP Outstanding",
+          "measure": "Total AP Outstanding",
+          "position": { "x": 900, "y": 80, "width": 200, "height": 100 },
+          "format": { "prefix": "$", "fontSize": 24 }
+        },
+        {
+          "visualId": "card-06",
+          "type": "Card",
+          "title": "Data Quality Score",
+          "measure": "Data Quality Score",
+          "position": { "x": 1120, "y": 80, "width": 200, "height": 100 },
+          "format": { "suffix": "%", "fontSize": 28 }
+        },
+
+        {
+          "visualId": "donut-01",
+          "type": "Donut Chart",
+          "title": "Reconciliation Status Breakdown",
+          "legend": "match_status",
+          "values": "Total Transactions",
+          "position": { "x": 20, "y": 200, "width": 380, "height": 300 },
+          "colors": {
+            "Fully Matched": "#107C10",
+            "Partially Matched": "#FF8C00",
+            "Unmatched": "#D13438",
+            "Exception": "#6B2D8B"
+          }
+        },
+        {
+          "visualId": "line-01",
+          "type": "Line Chart",
+          "title": "Daily Reconciliation Rate Trend (90 Days)",
+          "xAxis": "dim_calendar[full_date]",
+          "yAxis": ["Reconciliation Rate %", "Rolling 3M Avg Recon Rate"],
+          "position": { "x": 420, "y": 200, "width": 600, "height": 300 },
+          "markers": true,
+          "referenceLine": { "value": 98, "label": "Target 98%", "color": "#107C10" }
+        },
+        {
+          "visualId": "bar-01",
+          "type": "Clustered Bar Chart",
+          "title": "Reconciliation by Department",
+          "yAxis": "dim_department[department_name]",
+          "xAxis": ["Matched Transactions", "Unmatched Transactions", "Exception Count"],
+          "position": { "x": 1040, "y": 200, "width": 380, "height": 300 },
+          "sortBy": "Matched Transactions",
+          "sortOrder": "Descending"
+        },
+
+        {
+          "visualId": "slicer-01",
+          "type": "Slicer",
+          "title": "Date Range",
+          "field": "dim_calendar[full_date]",
+          "slicerType": "Between",
+          "position": { "x": 20, "y": 520, "width": 280, "height": 80 }
+        },
+        {
+          "visualId": "slicer-02",
+          "type": "Slicer",
+          "title": "Department",
+          "field": "dim_department[department_name]",
+          "slicerType": "Dropdown",
+          "position": { "x": 320, "y": 520, "width": 220, "height": 80 }
+        },
+        {
+          "visualId": "slicer-03",
+          "type": "Slicer",
+          "title": "Match Status",
+          "field": "fact_reconciliation_results[match_status]",
+          "slicerType": "Tile",
+          "position": { "x": 560, "y": 520, "width": 300, "height": 80 }
+        },
+        {
+          "visualId": "slicer-04",
+          "type": "Slicer",
+          "title": "Risk Tier",
+          "field": "fact_reconciliation_results[risk_tier]",
+          "slicerType": "Tile",
+          "position": { "x": 880, "y": 520, "width": 260, "height": 80 }
+        }
+      ]
+    },
+
+    {
+      "pageId": "page-2",
+      "pageName": "SAP vs Bank Reconciliation",
+      "pageOrder": 2,
+      "description": "Detailed SAP to bank statement matching analysis",
+
+      "visuals": [
+        {
+          "visualId": "matrix-01",
+          "type": "Matrix",
+          "title": "Reconciliation Detail — SAP vs Bank",
+          "rows": ["dim_department[department_name]", "fact_reconciliation_results[sap_transaction_id]"],
+          "columns": ["dim_calendar[month_name]"],
+          "values": ["Total Transactions", "Matched Transactions", "Total Variance Amount"],
+          "position": { "x": 20, "y": 80, "width": 900, "height": 500 },
+          "subtotals": true,
+          "grandTotal": true,
+          "conditionalFormatting": {
+            "Total Variance Amount": {
+              "type": "Color Scale",
+              "lowColor": "#107C10",
+              "midColor": "#FF8C00",
+              "highColor": "#D13438"
+            }
+          }
+        },
+        {
+          "visualId": "scatter-01",
+          "type": "Scatter Chart",
+          "title": "SAP Amount vs Bank Amount (Variance Detection)",
+          "xAxis": "sap_amount",
+          "yAxis": "bank_amount",
+          "legend": "match_status",
+          "size": "Total Variance Amount",
+          "position": { "x": 940, "y": 80, "width": 500, "height": 300 },
+          "referenceLine": "diagonal"
+        },
+        {
+          "visualId": "table-01",
+          "type": "Table",
+          "title": "Unmatched Transactions — Action Required",
+          "columns": [
+            "sap_transaction_id", "transaction_date", "department_name",
+            "sap_amount", "bank_amount", "variance_amount",
+            "exception_reason", "risk_tier", "resolution_status"
+          ],
+          "position": { "x": 940, "y": 400, "width": 500, "height": 240 },
+          "rowLimit": 100,
+          "drillthrough": "page-5"
+        }
+      ]
+    },
+
+    {
+      "pageId": "page-3",
+      "pageName": "AP & AR Dashboard",
+      "pageOrder": 3,
+      "description": "Accounts payable aging, AR collections, and cash flow impact",
+
+      "visuals": [
+        {
+          "visualId": "card-ap-01",
+          "type": "Card",
+          "title": "Total AP Outstanding",
+          "measure": "Total AP Outstanding",
+          "position": { "x": 20, "y": 80, "width": 220, "height": 100 },
+          "format": { "prefix": "$" }
+        },
+        {
+          "visualId": "card-ap-02",
+          "type": "Card",
+          "title": "Overdue AP",
+          "measure": "Overdue AP Amount",
+          "position": { "x": 260, "y": 80, "width": 220, "height": 100 },
+          "format": { "prefix": "$", "conditionalColor": "Exception Color" }
+        },
+        {
+          "visualId": "card-ap-03",
+          "type": "Card",
+          "title": "3-Way Match Rate",
+          "measure": "Three Way Match Rate %",
+          "position": { "x": 500, "y": 80, "width": 220, "height": 100 },
+          "format": { "suffix": "%" }
+        },
+        {
+          "visualId": "card-ar-01",
+          "type": "Card",
+          "title": "AR Outstanding",
+          "measure": "Total AR Outstanding",
+          "position": { "x": 740, "y": 80, "width": 220, "height": 100 },
+          "format": { "prefix": "$" }
+        },
+        {
+          "visualId": "card-ar-02",
+          "type": "Card",
+          "title": "Collection Rate",
+          "measure": "AR Collection Rate %",
+          "position": { "x": 980, "y": 80, "width": 220, "height": 100 },
+          "format": { "suffix": "%" }
+        },
+        {
+          "visualId": "card-ar-03",
+          "type": "Card",
+          "title": "Days Sales Outstanding",
+          "measure": "DSO",
+          "position": { "x": 1220, "y": 80, "width": 200, "height": 100 },
+          "format": { "suffix": " days" }
+        },
+
+        {
+          "visualId": "stacked-bar-ap",
+          "type": "Stacked Bar Chart",
+          "title": "AP Aging by Department",
+          "yAxis": "dim_department[department_name]",
+          "xAxis": "Total AP Outstanding",
+          "legend": "fact_ap_invoices[aging_bucket]",
+          "position": { "x": 20, "y": 200, "width": 680, "height": 350 },
+          "colors": {
+            "Current":    "#107C10",
+            "1–30 Days":  "#86BC25",
+            "31–60 Days": "#FF8C00",
+            "61–90 Days": "#E74C3C",
+            "90+ Days":   "#8B0000"
+          }
+        },
+        {
+          "visualId": "waterfall-ar",
+          "type": "Waterfall Chart",
+          "title": "AR Collections Waterfall — Outstanding by Customer",
+          "category": "dim_customer[customer_name]",
+          "yAxis": "Total AR Outstanding",
+          "position": { "x": 720, "y": 200, "width": 720, "height": 350 }
+        },
+
+        {
+          "visualId": "table-ap",
+          "type": "Table",
+          "title": "Overdue AP Invoices",
+          "columns": [
+            "invoice_id", "vendor_name", "due_date",
+            "total_amount", "outstanding_amount", "days_overdue",
+            "aging_bucket", "payment_status"
+          ],
+          "position": { "x": 20, "y": 570, "width": 700, "height": 220 },
+          "conditionalFormatting": {
+            "days_overdue": { "type": "DataBar", "maxColor": "#D13438" }
+          }
+        },
+        {
+          "visualId": "table-ar",
+          "type": "Table",
+          "title": "AR Overdue — Collections Action Required",
+          "columns": [
+            "invoice_id", "customer_name", "due_date",
+            "total_amount", "outstanding_balance",
+            "reconciliation_status", "collection_notes"
+          ],
+          "position": { "x": 740, "y": 570, "width": 700, "height": 220 }
+        }
+      ]
+    },
+
+    {
+      "pageId": "page-4",
+      "pageName": "Budget vs Actual",
+      "pageOrder": 4,
+      "description": "Department budget utilization, variance analysis, and trend forecasting",
+
+      "visuals": [
+        {
+          "visualId": "card-bud-01",
+          "type": "Card",
+          "title": "Total Budget",
+          "measure": "Total Revised Budget",
+          "position": { "x": 20, "y": 80, "width": 200, "height": 100 },
+          "format": { "prefix": "$" }
+        },
+        {
+          "visualId": "card-bud-02",
+          "type": "Card",
+          "title": "Total Actual Spend",
+          "measure": "Total Actual Spend",
+          "position": { "x": 240, "y": 80, "width": 200, "height": 100 },
+          "format": { "prefix": "$" }
+        },
+        {
+          "visualId": "card-bud-03",
+          "type": "Card",
+          "title": "Total Variance",
+          "measure": "Total Budget Variance",
+          "position": { "x": 460, "y": 80, "width": 200, "height": 100 },
+          "format": { "prefix": "$", "conditionalColor": "Variance Color" }
+        },
+        {
+          "visualId": "card-bud-04",
+          "type": "Card",
+          "title": "Utilization Rate",
+          "measure": "Budget Utilization %",
+          "position": { "x": 680, "y": 80, "width": 200, "height": 100 },
+          "format": { "suffix": "%" }
+        },
+        {
+          "visualId": "card-bud-05",
+          "type": "Card",
+          "title": "Depts Over Budget",
+          "measure": "Over Budget Dept Count",
+          "position": { "x": 900, "y": 80, "width": 200, "height": 100 },
+          "format": { "conditionalColor": "Exception Color" }
+        },
+
+        {
+          "visualId": "clustered-col-bud",
+          "type": "Clustered Column Chart",
+          "title": "Budget vs Actual by Department",
+          "xAxis": "dim_department[department_name]",
+          "yAxis": ["Total Revised Budget", "Total Actual Spend"],
+          "position": { "x": 20, "y": 200, "width": 700, "height": 300 },
+          "referenceLine": { "measure": "Total Revised Budget", "label": "Budget" }
+        },
+        {
+          "visualId": "waterfall-variance",
+          "type": "Waterfall Chart",
+          "title": "Budget Variance Waterfall — Department Breakdown",
+          "category": "dim_department[department_name]",
+          "yAxis": "Total Budget Variance",
+          "position": { "x": 740, "y": 200, "width": 700, "height": 300 },
+          "positiveColor": "#107C10",
+          "negativeColor": "#D13438"
+        },
+
+        {
+          "visualId": "matrix-bud",
+          "type": "Matrix",
+          "title": "Budget vs Actual Heatmap",
+          "rows": ["dim_department[department_name]"],
+          "columns": ["fact_budget[category]"],
+          "values": ["Budget Utilization %"],
+          "position": { "x": 20, "y": 520, "width": 1420, "height": 260 },
+          "conditionalFormatting": {
+            "Budget Utilization %": {
+              "type": "Color Scale",
+              "lowValue": 0,    "lowColor": "#107C10",
+              "midValue": 100,  "midColor": "#FF8C00",
+              "highValue": 130, "highColor": "#D13438"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "pageId": "page-5",
+      "pageName": "Exception Report",
+      "pageOrder": 5,
+      "description": "Drill-through exception details, risk tiers, and resolution tracking",
+
+      "visuals": [
+        {
+          "visualId": "table-exc",
+          "type": "Table",
+          "title": "All Exceptions — Full Detail",
+          "columns": [
+            "exception_type", "source_system", "source_record_id",
+            "department_name", "amount", "severity",
+            "status", "assigned_to", "resolved_date", "resolution_notes"
+          ],
+          "position": { "x": 20, "y": 80, "width": 1380, "height": 300 },
+          "enableSearch": true,
+          "exportEnabled": true,
+          "conditionalFormatting": {
+            "severity": {
+              "type": "Rules",
+              "rules": [
+                { "value": "High",   "backgroundColor": "#FFDFE1", "textColor": "#D13438" },
+                { "value": "Medium", "backgroundColor": "#FFF4CE", "textColor": "#FF8C00" },
+                { "value": "Low",    "backgroundColor": "#DFF6DD", "textColor": "#107C10" }
+              ]
+            }
+          }
+        },
+        {
+          "visualId": "bar-exc-type",
+          "type": "Bar Chart",
+          "title": "Exception Count by Type",
+          "xAxis": "exception_count",
+          "yAxis": "exception_type",
+          "legend": "severity",
+          "position": { "x": 20, "y": 400, "width": 600, "height": 300 }
+        },
+        {
+          "visualId": "bar-exc-dept",
+          "type": "Bar Chart",
+          "title": "Exception Count by Department",
+          "xAxis": "exception_count",
+          "yAxis": "department_name",
+          "position": { "x": 640, "y": 400, "width": 380, "height": 300 }
+        },
+        {
+          "visualId": "line-exc-trend",
+          "type": "Line Chart",
+          "title": "Exception Trend (Last 90 Days)",
+          "xAxis": "dim_calendar[full_date]",
+          "yAxis": ["Exception Count", "High Risk Count"],
+          "position": { "x": 1040, "y": 400, "width": 380, "height": 300 }
+        }
+      ]
+    },
+
+    {
+      "pageId": "page-6",
+      "pageName": "Data Quality Scorecard",
+      "pageOrder": 6,
+      "description": "Source system data quality metrics and Alteryx pipeline monitoring",
+
+      "visuals": [
+        {
+          "visualId": "gauge-dq",
+          "type": "Gauge",
+          "title": "Overall Data Quality Score",
+          "measure": "Data Quality Score",
+          "min": 0,
+          "max": 100,
+          "target": 98,
+          "position": { "x": 20, "y": 80, "width": 300, "height": 220 },
+          "colors": { "good": "#107C10", "warning": "#FF8C00", "critical": "#D13438" },
+          "thresholds": [90, 95]
+        },
+        {
+          "visualId": "table-dq",
+          "type": "Table",
+          "title": "Data Quality by Source System",
+          "columns": [
+            "data_source", "total_records", "valid_records",
+            "error_records", "duplicate_records", "quality_score_pct"
+          ],
+          "position": { "x": 340, "y": 80, "width": 800, "height": 220 },
+          "conditionalFormatting": {
+            "quality_score_pct": {
+              "type": "Color Scale",
+              "lowColor": "#D13438",
+              "midColor": "#FF8C00",
+              "highColor": "#107C10"
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "bookmarks": [
+    {
+      "bookmarkId": "bm-01",
+      "name": "Reset All Filters",
+      "action": "clearAllSlicers"
+    },
+    {
+      "bookmarkId": "bm-02",
+      "name": "Show High Risk Only",
+      "slicerState": { "risk_tier": ["High Risk"] }
+    },
+    {
+      "bookmarkId": "bm-03",
+      "name": "Current Month View",
+      "slicerState": { "date_range": "currentMonth" }
+    },
+    {
+      "bookmarkId": "bm-04",
+      "name": "Exceptions Only",
+      "slicerState": { "match_status": ["Exception", "Unmatched"] }
+    },
+    {
+      "bookmarkId": "bm-05",
+      "name": "Q1 2024 Full View",
+      "slicerState": { "date_range": "2024-01-01 to 2024-03-31" }
+    }
+  ],
+
+  "navigationButtons": [
+    { "label": "Executive Summary",      "pageId": "page-1", "icon": "home" },
+    { "label": "SAP vs Bank",            "pageId": "page-2", "icon": "compare" },
+    { "label": "AP & AR",               "pageId": "page-3", "icon": "invoice" },
+    { "label": "Budget vs Actual",       "pageId": "page-4", "icon": "budget" },
+    { "label": "Exceptions",             "pageId": "page-5", "icon": "alert" },
+    { "label": "Data Quality",           "pageId": "page-6", "icon": "quality" }
+  ],
+
+  "dataModel": {
+    "tables": [
+      "fact_reconciliation_results",
+      "fact_sap_transactions",
+      "fact_bank_statements",
+      "fact_journal_entries",
+      "fact_ap_invoices",
+      "fact_ar_invoices",
+      "fact_budget",
+      "dim_department",
+      "dim_account",
+      "dim_vendor",
+      "dim_customer",
+      "dim_calendar"
+    ],
+    "relationships": [
+      { "from": "fact_reconciliation_results[department_code]", "to": "dim_department[department_code]", "type": "ManyToOne" },
+      { "from": "fact_sap_transactions[department_code]",       "to": "dim_department[department_code]", "type": "ManyToOne" },
+      { "from": "fact_ap_invoices[department_code]",            "to": "dim_department[department_code]", "type": "ManyToOne" },
+      { "from": "fact_ar_invoices[department_code]",            "to": "dim_department[department_code]", "type": "ManyToOne" },
+      { "from": "fact_budget[department_code]",                 "to": "dim_department[department_code]", "type": "ManyToOne" },
+      { "from": "fact_sap_transactions[transaction_date]",      "to": "dim_calendar[full_date]",         "type": "ManyToOne" },
+      { "from": "fact_reconciliation_results[transaction_date]","to": "dim_calendar[full_date]",         "type": "ManyToOne" },
+      { "from": "fact_ap_invoices[vendor_code]",                "to": "dim_vendor[vendor_code]",         "type": "ManyToOne" },
+      { "from": "fact_ar_invoices[customer_code]",              "to": "dim_customer[customer_code]",     "type": "ManyToOne" }
+    ]
+  }
+}

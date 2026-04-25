@@ -1,0 +1,335 @@
+=====================================================================
+  EXCEL VALIDATION WORKBOOK — Financial Reconciliation Cross-Check
+  File: validation_formulas.xlsx  (Apply these formulas in Excel)
+  Purpose: VLOOKUP/HLOOKUP cross-verification of reconciled data
+=====================================================================
+
+This file documents every formula used in the validation workbook.
+Recreate this in Excel with the sheet names and cell references below.
+
+=====================================================================
+SHEET STRUCTURE
+=====================================================================
+
+  Sheet 1 : SAP_Transactions       ← Paste SAP data here
+  Sheet 2 : Bank_Statements        ← Paste bank data here
+  Sheet 3 : AP_Invoices            ← Paste AP data here
+  Sheet 4 : Budget_Allocations     ← Paste budget data here
+  Sheet 5 : AR_Invoices            ← Paste AR data here
+  Sheet 6 : Recon_Validation       ← Main validation output (formulas below)
+  Sheet 7 : Exception_Tracker      ← Auto-populated exceptions
+  Sheet 8 : Dashboard_Summary      ← KPI summary for management
+
+=====================================================================
+SHEET 6: RECON_VALIDATION — COLUMN LAYOUT & FORMULAS
+=====================================================================
+
+ROW 1 = Headers (bold)
+ROW 2 onwards = Data rows
+
+--- Column A: SAP Transaction ID ---
+  A2: (paste SAP Transaction IDs here, e.g. SAP-TXN-00001)
+
+--- Column B: SAP Amount ---
+  B2: =VLOOKUP(A2, SAP_Transactions!$A:$G, 6, FALSE)
+  // Looks up TransactionID in SAP sheet, returns Amount (col 6)
+
+--- Column C: SAP Department ---
+  C2: =VLOOKUP(A2, SAP_Transactions!$A:$G, 3, FALSE)
+  // Returns Department for the SAP transaction
+
+--- Column D: SAP Status ---
+  D2: =VLOOKUP(A2, SAP_Transactions!$A:$G, 11, FALSE)
+  // Returns Status (Posted/Error/Duplicate)
+
+--- Column E: Bank Reference (Lookup from Bank sheet) ---
+  E2: =IFERROR(
+        VLOOKUP(A2, Bank_Statements!$J:$A, -9, FALSE),
+        "NOT FOUND"
+      )
+  // Looks up SAP_Reference in bank sheet col J, returns Bank BankRef
+  // Simplified — use INDEX/MATCH for reverse lookup:
+  E2: =IFERROR(
+        INDEX(Bank_Statements!$A:$A,
+              MATCH(A2, Bank_Statements!$J:$J, 0)),
+        "NOT FOUND IN BANK"
+      )
+
+--- Column F: Bank Amount ---
+  F2: =IFERROR(
+        INDEX(Bank_Statements!$E:$E,
+              MATCH(A2, Bank_Statements!$J:$J, 0))
+        - INDEX(Bank_Statements!$F:$F,
+                MATCH(A2, Bank_Statements!$J:$J, 0)),
+        0
+      )
+  // Net bank amount = Credit - Debit
+
+--- Column G: Bank Reconciliation Status ---
+  G2: =IFERROR(
+        INDEX(Bank_Statements!$L:$L,
+              MATCH(A2, Bank_Statements!$J:$J, 0)),
+        "UNMATCHED"
+      )
+
+--- Column H: Variance (SAP vs Bank) ---
+  H2: =B2 - F2
+  // Positive = SAP higher; Negative = Bank higher
+
+--- Column I: Variance % ---
+  I2: =IFERROR(H2 / ABS(B2) * 100, 0)
+
+--- Column J: AP Invoice Reference ---
+  J2: =IFERROR(
+        INDEX(AP_Invoices!$A:$A,
+              MATCH(A2, AP_Invoices!$Q:$Q, 0)),
+        "NO AP MATCH"
+      )
+  // Matches SAP doc ref in AP sheet col Q (SAP_DocumentRef)
+
+--- Column K: AP Invoice Amount ---
+  K2: =IFERROR(
+        VLOOKUP(J2, AP_Invoices!$A:$H, 8, FALSE),
+        0
+      )
+  // Looks up InvoiceID, returns TotalAmount
+
+--- Column L: AP Approval Status ---
+  L2: =IFERROR(
+        VLOOKUP(J2, AP_Invoices!$A:$P, 16, FALSE),
+        "N/A"
+      )
+
+--- Column M: AP Payment Status ---
+  M2: =IFERROR(
+        VLOOKUP(J2, AP_Invoices!$A:$Q, 17, FALSE),
+        "N/A"
+      )
+
+--- Column N: Department Budget (Current Quarter) ---
+  N2: =IFERROR(
+        SUMIFS(
+          Budget_Allocations!$H:$H,
+          Budget_Allocations!$E:$E, C2,
+          Budget_Allocations!$C:$C, "Q1"
+        ),
+        0
+      )
+  // SUMIFS to aggregate budget by department and quarter
+
+--- Column O: Actual Spend YTD (from Budget sheet) ---
+  O2: =IFERROR(
+        SUMIFS(
+          Budget_Allocations!$J:$J,
+          Budget_Allocations!$E:$E, C2,
+          Budget_Allocations!$C:$C, "Q1"
+        ),
+        0
+      )
+
+--- Column P: Budget Variance ---
+  P2: =N2 - O2
+
+--- Column Q: Reconciliation Flag ---
+  Q2: =IF(
+        AND(G2="Matched", L2="Approved", ABS(H2)<1),
+        "RECONCILED",
+        IF(
+          OR(G2="Unmatched", D2="Error"),
+          "EXCEPTION",
+          "REVIEW REQUIRED"
+        )
+      )
+
+--- Column R: Risk Color (for conditional formatting) ---
+  R2: =IF(Q2="RECONCILED","Low",IF(Q2="EXCEPTION","High","Medium"))
+
+--- Column S: Exception Reason ---
+  S2: =IF(D2="Error","SAP Error Record",
+        IF(D2="Duplicate","Duplicate Transaction",
+          IF(G2="Unmatched","Missing Bank Entry",
+            IF(L2="Disputed","AP Dispute",
+              IF(ABS(H2)>=100,"Significant Variance",
+                "")))))
+
+--- Column T: Days Since Transaction ---
+  T2: =TODAY() - VLOOKUP(A2, SAP_Transactions!$A:$B, 2, FALSE)
+
+--- Column U: Period (Month-Year) ---
+  U2: =TEXT(VLOOKUP(A2, SAP_Transactions!$A:$B, 2, FALSE), "MMM-YYYY")
+
+=====================================================================
+SHEET 7: EXCEPTION_TRACKER — AUTO-POPULATED
+=====================================================================
+
+--- Column A: Exception ID ---
+  A2: ="EXC-" & TEXT(ROW()-1,"000")
+
+--- Column B: Source SAP ID ---
+  B2: =IFERROR(
+        INDEX(Recon_Validation!$A:$A,
+              MATCH("EXCEPTION", Recon_Validation!$Q:$Q, 0)),
+        ""
+      )
+  // Use SMALL/IF array formula to extract all exceptions:
+  B2: =IFERROR(
+        INDEX(Recon_Validation!$A:$A,
+              SMALL(
+                IF(Recon_Validation!$Q$2:$Q$1000="EXCEPTION",
+                   ROW(Recon_Validation!$Q$2:$Q$1000)-ROW(Recon_Validation!$Q$2)+1),
+                ROW()-ROW($B$2)+1
+              )
+        ),
+        ""
+      )
+  // IMPORTANT: Enter with Ctrl+Shift+Enter (array formula)
+
+--- Column C: Exception Type ---
+  C2: =IFERROR(
+        INDEX(Recon_Validation!$S:$S,
+              MATCH(B2, Recon_Validation!$A:$A, 0)),
+        ""
+      )
+
+--- Column D: Amount ---
+  D2: =IFERROR(
+        INDEX(Recon_Validation!$B:$B,
+              MATCH(B2, Recon_Validation!$A:$A, 0)),
+        ""
+      )
+
+--- Column E: Department ---
+  E2: =IFERROR(
+        INDEX(Recon_Validation!$C:$C,
+              MATCH(B2, Recon_Validation!$A:$A, 0)),
+        ""
+      )
+
+--- Column F: Variance ---
+  F2: =IFERROR(
+        INDEX(Recon_Validation!$H:$H,
+              MATCH(B2, Recon_Validation!$A:$A, 0)),
+        ""
+      )
+
+--- Column G: Risk Level ---
+  G2: =IFERROR(
+        INDEX(Recon_Validation!$R:$R,
+              MATCH(B2, Recon_Validation!$A:$A, 0)),
+        ""
+      )
+
+--- Column H: Assigned To (manual entry) ---
+  H2: (manual entry by finance team)
+
+--- Column I: Resolution Status (dropdown validation) ---
+  I2: Data Validation → List: Open, In Review, Resolved, Escalated
+
+--- Column J: Notes (manual entry) ---
+  J2: (manual entry)
+
+=====================================================================
+SHEET 8: DASHBOARD_SUMMARY — KPI FORMULAS
+=====================================================================
+
+--- B2: Total Transactions ---
+  B2: =COUNTA(Recon_Validation!A:A)-1
+
+--- B3: Reconciled Count ---
+  B3: =COUNTIF(Recon_Validation!Q:Q,"RECONCILED")
+
+--- B4: Exception Count ---
+  B4: =COUNTIF(Recon_Validation!Q:Q,"EXCEPTION")
+
+--- B5: Review Required Count ---
+  B5: =COUNTIF(Recon_Validation!Q:Q,"REVIEW REQUIRED")
+
+--- B6: Reconciliation Rate % ---
+  B6: =IFERROR(B3/B2*100,0)
+  Format: 0.00%
+
+--- B7: Total Variance Amount ---
+  B7: =SUMIF(Recon_Validation!Q:Q,"<>RECONCILED",Recon_Validation!H:H)
+
+--- B8: High Risk Count ---
+  B8: =COUNTIF(Recon_Validation!R:R,"High")
+
+--- B9: Total AP Outstanding ---
+  B9: =SUMIF(AP_Invoices!Q:Q,"Pending Payment",AP_Invoices!J:J)
+        +SUMIF(AP_Invoices!Q:Q,"Overdue",AP_Invoices!J:J)
+
+--- B10: Total AR Outstanding ---
+  B10: =SUMIF(AR_Invoices!H:H,">0",AR_Invoices!H:H)
+
+--- B11: Budget Utilization % ---
+  B11: =IFERROR(SUM(Budget_Allocations!J:J)/SUM(Budget_Allocations!I:I)*100,0)
+
+--- Department Breakdown (HLOOKUP for horizontal tables) ---
+  // If budget data is laid out horizontally by quarter:
+  // Row 1: Q1, Q2, Q3, Q4
+  // Row 2: Finance amounts...
+  E5: =HLOOKUP("Q1", Budget_Allocations!$C$1:$F$100, MATCH("Finance", Budget_Allocations!$A:$A, 0), FALSE)
+
+=====================================================================
+CONDITIONAL FORMATTING RULES (Apply to Recon_Validation sheet)
+=====================================================================
+
+  Rule 1 — Column Q (Reconciliation Flag):
+    • "RECONCILED"      → Fill: #DFF6DD (light green)  | Text: #107C10
+    • "REVIEW REQUIRED" → Fill: #FFF4CE (light amber)  | Text: #FF8C00
+    • "EXCEPTION"       → Fill: #FFDFE1 (light red)    | Text: #D13438
+
+  Rule 2 — Column H (Variance):
+    • Value > 0         → Fill: #FFF4CE | Text: #FF8C00  (over)
+    • Value < 0         → Fill: #FFDFE1 | Text: #D13438  (under)
+    • Value = 0         → Fill: #DFF6DD | Text: #107C10  (matched)
+
+  Rule 3 — Column D (SAP Status):
+    • "Error"           → Fill: #FFDFE1 | Bold
+    • "Duplicate"       → Fill: #FFF4CE | Bold
+
+  Rule 4 — Column M (AP Payment Status):
+    • "Overdue"         → Fill: #FFDFE1 | Bold | Text: #D13438
+    • "Pending Payment" → Fill: #FFF4CE
+
+=====================================================================
+NAMED RANGES (Define in Name Manager for cleaner formulas)
+=====================================================================
+
+  SAP_Data      = SAP_Transactions!$A:$K
+  Bank_Data     = Bank_Statements!$A:$L
+  AP_Data       = AP_Invoices!$A:$T
+  Budget_Data   = Budget_Allocations!$A:$R
+  AR_Data       = AR_Invoices!$A:$Q
+  Recon_Output  = Recon_Validation!$A:$U
+  Exception_List= Exception_Tracker!$A:$J
+
+  Usage example with named ranges:
+  =VLOOKUP(A2, SAP_Data, 6, FALSE)       ← cleaner than sheet reference
+  =IFERROR(VLOOKUP(A2, Bank_Data, ..))
+
+=====================================================================
+PIVOT TABLE CONFIGURATION (for Dashboard_Summary)
+=====================================================================
+
+  Pivot 1 — Reconciliation Status by Department:
+    Rows:   Department (from Recon_Validation col C)
+    Columns: Reconciliation Flag (col Q)
+    Values:  Count of SAP Transaction ID
+
+  Pivot 2 — Exception Types:
+    Rows:   Exception Reason (col S)
+    Values: Count, Sum of Variance Amount
+
+  Pivot 3 — Monthly Trend:
+    Rows:   Period (col U)
+    Values: Count, Reconciliation Rate (calculated field)
+
+  Pivot 4 — Budget Variance by Category:
+    Rows:   Department, Category
+    Values: Budget Amount (Sum), Actual Spend (Sum), Variance (Sum)
+    Calculated Field:
+      Name: Variance %
+      Formula: = Variance / 'Revised Budget'
+
+=====================================================================

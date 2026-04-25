@@ -1,0 +1,34 @@
+JournalID,Date,Period,FiscalYear,Department,AccountCode,AccountName,Description,Debit,Credit,Currency,Reference,PreparedBy,ApprovedBy,Status,PostingDate
+MJE-2024-0001,2024-01-03,01,2024,Finance,10001,Cash & Bank,Opening balance transfer,250000.00,0.00,USD,REF-OB-001,jane.doe,finance.mgr,Approved,2024-01-03
+MJE-2024-0002,2024-01-03,01,2024,Finance,30010,Retained Earnings,Opening balance transfer,0.00,250000.00,USD,REF-OB-001,jane.doe,finance.mgr,Approved,2024-01-03
+MJE-2024-0003,2024-01-05,01,2024,Operations,20010,Accrued Expenses,Accrual - Utilities Jan,9870.00,0.00,USD,ACC-JAN-001,ops.accountant,finance.mgr,Approved,2024-01-05
+MJE-2024-0004,2024-01-05,01,2024,Operations,20003,Utilities,Accrual - Utilities Jan,0.00,9870.00,USD,ACC-JAN-001,ops.accountant,finance.mgr,Approved,2024-01-05
+MJE-2024-0005,2024-01-08,01,2024,Finance,10005,Prepaid Expenses,Prepaid insurance amortization,4000.00,0.00,USD,PREPD-JAN-01,finance.ctrl,finance.mgr,Approved,2024-01-08
+MJE-2024-0006,2024-01-08,01,2024,Finance,60010,Insurance Expense,Prepaid insurance amortization,0.00,4000.00,USD,PREPD-JAN-01,finance.ctrl,finance.mgr,Approved,2024-01-08
+MJE-2024-0007,2024-01-10,01,2024,Sales,70010,Revenue,January Revenue Recognition - Batch 1,0.00,520000.00,USD,REV-JAN-001,rev.accountant,cfo,Approved,2024-01-10
+MJE-2024-0008,2024-01-10,01,2024,Sales,10002,Accounts Receivable,January Revenue Recognition - Batch 1,520000.00,0.00,USD,REV-JAN-001,rev.accountant,cfo,Approved,2024-01-10
+MJE-2024-0009,2024-01-12,01,2024,Operations,20010,Accrued Expenses,Accrual - Maintenance Jan,7800.00,0.00,USD,ACC-JAN-002,ops.accountant,finance.mgr,Approved,2024-01-12
+MJE-2024-0010,2024-01-12,01,2024,Operations,20004,Maintenance,Accrual - Maintenance Jan,0.00,7800.00,USD,ACC-JAN-002,ops.accountant,finance.mgr,Approved,2024-01-12
+MJE-2024-0011,2024-01-15,01,2024,Finance,10006,Deferred Revenue,Advance payment from CUST-B202,98500.00,0.00,USD,DEF-REV-001,ar.team,finance.mgr,Approved,2024-01-15
+MJE-2024-0012,2024-01-15,01,2024,Finance,10001,Cash & Bank,Advance payment from CUST-B202,0.00,98500.00,USD,DEF-REV-001,ar.team,finance.mgr,Approved,2024-01-15
+MJE-2024-0013,2024-01-17,01,2024,IT,40010,Depreciation Expense,IT Equipment depreciation - Jan,8500.00,0.00,USD,DEPR-JAN-01,it.accountant,finance.mgr,Approved,2024-01-17
+MJE-2024-0014,2024-01-17,01,2024,IT,40020,Accumulated Depreciation,IT Equipment depreciation - Jan,0.00,8500.00,USD,DEPR-JAN-01,it.accountant,finance.mgr,Approved,2024-01-17
+MJE-2024-0015,2024-01-19,01,2024,Finance,10001,Cash & Bank,Intercompany reconciliation - BU South,150000.00,0.00,USD,IC-2024-001,treasury,cfo,Approved,2024-01-19
+MJE-2024-0016,2024-01-19,01,2024,Finance,80010,Intercompany Payable,Intercompany reconciliation - BU South,0.00,150000.00,USD,IC-2024-001,treasury,cfo,Approved,2024-01-19
+MJE-2024-0017,2024-01-22,01,2024,Finance,10007,Tax Payable,VAT accrual - January,0.00,35420.00,USD,TAX-JAN-001,tax.accountant,cfo,Approved,2024-01-22
+MJE-2024-0018,2024-01-22,01,2024,Finance,70020,Tax Expense,VAT accrual - January,35420.00,0.00,USD,TAX-JAN-001,tax.accountant,cfo,Approved,2024-01-22
+MJE-2024-0019,2024-01-25,01,2024,Sales,70010,Revenue,January Revenue Recognition - Batch 2,0.00,680000.00,USD,REV-JAN-002,rev.accountant,cfo,Approved,2024-01-25
+MJE-2024-0020,2024-01-25,01,2024,Sales,10002,Accounts Receivable,January Revenue Recognition - Batch 2,680000.00,0.00,USD,REV-JAN-002,rev.accountant,cfo,Approved,2024-01-25
+MJE-2024-0021,2024-01-31,01,2024,Finance,10005,Prepaid Expenses,Month-end prepaid amortization,4000.00,0.00,USD,ME-JAN-001,finance.ctrl,finance.mgr,Approved,2024-01-31
+MJE-2024-0022,2024-01-31,01,2024,Finance,60010,Insurance Expense,Month-end prepaid amortization,0.00,4000.00,USD,ME-JAN-001,finance.ctrl,finance.mgr,Approved,2024-01-31
+MJE-2024-0023,2024-01-31,01,2024,Operations,20010,Accrued Expenses,Month-end accruals - Freight,14350.00,0.00,USD,ME-JAN-002,ops.accountant,finance.mgr,Approved,2024-01-31
+MJE-2024-0024,2024-01-31,01,2024,Operations,20005,Freight & Logistics,Month-end accruals - Freight,0.00,14350.00,USD,ME-JAN-002,ops.accountant,finance.mgr,Approved,2024-01-31
+MJE-2024-0025,2024-01-31,01,2024,Finance,10008,FX Revaluation,FX gain/loss - USD/EUR position,-2340.00,0.00,USD,FX-JAN-001,treasury,cfo,Approved,2024-01-31
+MJE-2024-0026,2024-01-31,01,2024,Finance,90010,FX Gain/Loss,FX gain/loss - USD/EUR position,0.00,-2340.00,USD,FX-JAN-001,treasury,cfo,Approved,2024-01-31
+MJE-2024-0027,2024-02-01,02,2024,Finance,10010,Accrued Revenue,Revenue accrual - contracts in progress,125000.00,0.00,USD,ACC-FEB-001,rev.accountant,cfo,Approved,2024-02-01
+MJE-2024-0028,2024-02-01,02,2024,Sales,70010,Revenue,Revenue accrual - contracts in progress,0.00,125000.00,USD,ACC-FEB-001,rev.accountant,cfo,Approved,2024-02-01
+MJE-2024-0029,2024-02-05,02,2024,Finance,10007,Tax Payable,February tax accrual,0.00,42100.00,USD,TAX-FEB-001,tax.accountant,cfo,Approved,2024-02-05
+MJE-2024-0030,2024-02-05,02,2024,Finance,70020,Tax Expense,February tax accrual,42100.00,0.00,USD,TAX-FEB-001,tax.accountant,cfo,Approved,2024-02-05
+MJE-PEND-001,2024-01-28,01,2024,Marketing,50010,Accrued Marketing,Campaign accrual - awaiting approval,28750.00,0.00,USD,ACC-MKT-001,mkt.accountant,,Pending,
+MJE-PEND-002,2024-01-28,01,2024,Marketing,50001,Advertising Expense,Campaign accrual - awaiting approval,0.00,28750.00,USD,ACC-MKT-001,mkt.accountant,,Pending,
+MJE-ERR-001,2024-01-20,01,2024,Finance,10001,Cash & Bank,Incorrect entry - amount mismatch,35000.00,0.00,USD,REF-ERR-001,trainee.acct,finance.mgr,Rejected,

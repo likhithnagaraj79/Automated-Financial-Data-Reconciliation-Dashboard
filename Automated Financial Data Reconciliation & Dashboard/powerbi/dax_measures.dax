@@ -1,0 +1,379 @@
+// ============================================================
+// Power BI DAX Measures — Financial Reconciliation Dashboard
+// Author : Financial Analytics Team
+// Purpose: All DAX measures, calculated columns, and KPI logic
+//          for the Deloitte Shared Services reconciliation dashboard
+// ============================================================
+
+
+// ============================================================
+// TABLE: RECONCILIATION RESULTS
+// ============================================================
+
+// --- KPI: Total Transactions ---
+Total Transactions =
+COUNTROWS( fact_reconciliation_results )
+
+// --- KPI: Matched Transactions ---
+Matched Transactions =
+CALCULATE(
+    COUNTROWS( fact_reconciliation_results ),
+    fact_reconciliation_results[match_status] = "Fully Matched"
+)
+
+// --- KPI: Unmatched Transactions ---
+Unmatched Transactions =
+CALCULATE(
+    COUNTROWS( fact_reconciliation_results ),
+    fact_reconciliation_results[match_status] = "Unmatched"
+)
+
+// --- KPI: Exceptions Count ---
+Exception Count =
+CALCULATE(
+    COUNTROWS( fact_reconciliation_results ),
+    fact_reconciliation_results[match_status] = "Exception"
+)
+
+// --- KPI: Reconciliation Rate % ---
+Reconciliation Rate % =
+DIVIDE(
+    [Matched Transactions],
+    [Total Transactions],
+    0
+) * 100
+
+// --- KPI: Reconciliation Rate (Formatted) ---
+Reconciliation Rate Display =
+FORMAT( [Reconciliation Rate %], "0.00" ) & "%"
+
+// --- KPI: Total Variance Amount ---
+Total Variance Amount =
+SUMX(
+    fact_reconciliation_results,
+    ABS( fact_reconciliation_results[variance_amount] )
+)
+
+// --- KPI: Average Match Score ---
+Avg Match Score =
+AVERAGE( fact_reconciliation_results[match_score] )
+
+// --- KPI: High Risk Items ---
+High Risk Count =
+CALCULATE(
+    COUNTROWS( fact_reconciliation_results ),
+    fact_reconciliation_results[risk_tier] = "High Risk"
+)
+
+// --- KPI: Open Resolution Items ---
+Open Items Count =
+CALCULATE(
+    COUNTROWS( fact_reconciliation_results ),
+    fact_reconciliation_results[resolution_status] = "Open"
+)
+
+// --- Variance vs Prior Period ---
+Recon Rate Prior Month =
+CALCULATE(
+    [Reconciliation Rate %],
+    DATEADD( dim_calendar[full_date], -1, MONTH )
+)
+
+Recon Rate MoM Change =
+[Reconciliation Rate %] - [Recon Rate Prior Month]
+
+// ============================================================
+// TABLE: AP INVOICES
+// ============================================================
+
+// --- Total AP Outstanding ---
+Total AP Outstanding =
+SUM( fact_ap_invoices[outstanding_amount] )
+
+// --- Total AP Invoiced ---
+Total AP Invoiced =
+SUM( fact_ap_invoices[total_amount] )
+
+// --- Total AP Paid ---
+Total AP Paid =
+SUM( fact_ap_invoices[paid_amount] )
+
+// --- AP Payment Rate % ---
+AP Payment Rate % =
+DIVIDE( [Total AP Paid], [Total AP Invoiced], 0 ) * 100
+
+// --- Overdue AP Amount ---
+Overdue AP Amount =
+CALCULATE(
+    SUM( fact_ap_invoices[outstanding_amount] ),
+    fact_ap_invoices[payment_status] = "Overdue"
+)
+
+// --- Overdue Invoice Count ---
+Overdue Invoice Count =
+CALCULATE(
+    COUNTROWS( fact_ap_invoices ),
+    fact_ap_invoices[payment_status] = "Overdue"
+)
+
+// --- Average Days Overdue ---
+Avg Days Overdue =
+CALCULATE(
+    AVERAGE( fact_ap_invoices[days_overdue] ),
+    fact_ap_invoices[days_overdue] > 0
+)
+
+// --- PO Match Rate % ---
+PO Match Rate % =
+DIVIDE(
+    CALCULATE( COUNTROWS(fact_ap_invoices), fact_ap_invoices[po_matched] = TRUE() ),
+    COUNTROWS( fact_ap_invoices ),
+    0
+) * 100
+
+// --- 3-Way Match Rate % ---
+Three Way Match Rate % =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS( fact_ap_invoices ),
+        fact_ap_invoices[po_matched]   = TRUE(),
+        fact_ap_invoices[sap_matched]  = TRUE(),
+        fact_ap_invoices[grn_status]   = "GRN-Received"
+    ),
+    COUNTROWS( fact_ap_invoices ),
+    0
+) * 100
+
+// --- AP Aging Buckets (Calculated Column) ---
+AP Aging Bucket CC =
+SWITCH(
+    TRUE(),
+    fact_ap_invoices[outstanding_amount] = 0,               "Cleared",
+    fact_ap_invoices[days_overdue] <= 0,                    "Current",
+    fact_ap_invoices[days_overdue] <= 30,                   "1–30 Days",
+    fact_ap_invoices[days_overdue] <= 60,                   "31–60 Days",
+    fact_ap_invoices[days_overdue] <= 90,                   "61–90 Days",
+                                                            "90+ Days"
+)
+
+// ============================================================
+// TABLE: AR INVOICES
+// ============================================================
+
+// --- Total AR Outstanding ---
+Total AR Outstanding =
+SUM( fact_ar_invoices[outstanding_balance] )
+
+// --- Total AR Billed ---
+Total AR Billed =
+SUM( fact_ar_invoices[total_amount] )
+
+// --- Total AR Collected ---
+Total AR Collected =
+SUM( fact_ar_invoices[payment_received] )
+
+// --- AR Collection Rate % ---
+AR Collection Rate % =
+DIVIDE( [Total AR Collected], [Total AR Billed], 0 ) * 100
+
+// --- Overdue AR Amount ---
+Overdue AR Amount =
+CALCULATE(
+    SUM( fact_ar_invoices[outstanding_balance] ),
+    fact_ar_invoices[reconciliation_status] = "Overdue"
+)
+
+// --- Days Sales Outstanding (DSO) ---
+DSO =
+DIVIDE(
+    [Total AR Outstanding],
+    DIVIDE( [Total AR Billed], 30, 0 ),
+    0
+)
+
+// ============================================================
+// TABLE: BUDGET ALLOCATIONS
+// ============================================================
+
+// --- Total Budget ---
+Total Budget =
+SUM( fact_budget[budget_amount] )
+
+// --- Total Revised Budget ---
+Total Revised Budget =
+SUM( fact_budget[revised_budget] )
+
+// --- Total Actual Spend ---
+Total Actual Spend =
+SUM( fact_budget[actual_spend] )
+
+// --- Total Budget Variance ---
+Total Budget Variance =
+SUM( fact_budget[variance] )
+
+// --- Overall Utilization Rate % ---
+Budget Utilization % =
+DIVIDE( [Total Actual Spend], [Total Revised Budget], 0 ) * 100
+
+// --- Over Budget Department Count ---
+Over Budget Dept Count =
+CALCULATE(
+    DISTINCTCOUNT( fact_budget[department_code] ),
+    fact_budget[variance_label] = "Over Budget"
+)
+
+// --- % Departments Over Budget ---
+Pct Depts Over Budget =
+DIVIDE(
+    [Over Budget Dept Count],
+    DISTINCTCOUNT( fact_budget[department_code] ),
+    0
+) * 100
+
+// --- Variance Traffic Light (Calculated Column) ---
+Budget Variance Color CC =
+SWITCH(
+    TRUE(),
+    fact_budget[variance_pct] >= 0,                     "Green",
+    fact_budget[variance_pct] >= -15,                   "Amber",
+                                                        "Red"
+)
+
+// ============================================================
+// TABLE: SAP TRANSACTIONS
+// ============================================================
+
+// --- Total SAP Transaction Volume ---
+Total SAP Volume =
+SUMX( fact_sap_transactions, ABS( fact_sap_transactions[amount] ) )
+
+// --- SAP Error Rate % ---
+SAP Error Rate % =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS( fact_sap_transactions ),
+        fact_sap_transactions[sap_status] = "Error"
+    ),
+    COUNTROWS( fact_sap_transactions ),
+    0
+) * 100
+
+// --- Data Quality Score ---
+Data Quality Score =
+( 100 - [SAP Error Rate %] )
+
+// ============================================================
+// TIME INTELLIGENCE MEASURES
+// ============================================================
+
+// --- Month-to-Date Reconciled ---
+MTD Reconciled =
+CALCULATE(
+    [Matched Transactions],
+    DATESMTD( dim_calendar[full_date] )
+)
+
+// --- Quarter-to-Date Reconciled ---
+QTD Reconciled =
+CALCULATE(
+    [Matched Transactions],
+    DATESQTD( dim_calendar[full_date] )
+)
+
+// --- Year-to-Date Reconciled ---
+YTD Reconciled =
+CALCULATE(
+    [Matched Transactions],
+    DATESYTD( dim_calendar[full_date] )
+)
+
+// --- Prior Month Transactions ---
+Prior Month Transactions =
+CALCULATE(
+    [Total Transactions],
+    DATEADD( dim_calendar[full_date], -1, MONTH )
+)
+
+// --- Transaction Growth MoM % ---
+Transaction MoM Growth % =
+DIVIDE(
+    [Total Transactions] - [Prior Month Transactions],
+    [Prior Month Transactions],
+    0
+) * 100
+
+// --- Rolling 3-Month Average Recon Rate ---
+Rolling 3M Avg Recon Rate =
+AVERAGEX(
+    DATESINPERIOD(
+        dim_calendar[full_date],
+        LASTDATE( dim_calendar[full_date] ),
+        -3,
+        MONTH
+    ),
+    [Reconciliation Rate %]
+)
+
+// ============================================================
+// CONDITIONAL FORMATTING MEASURES
+// ============================================================
+
+// --- Recon Rate Color (for card visual) ---
+Recon Rate Color =
+SWITCH(
+    TRUE(),
+    [Reconciliation Rate %] >= 98,  "#107C10",    // Green
+    [Reconciliation Rate %] >= 90,  "#FF8C00",    // Amber
+                                    "#D13438"     // Red
+)
+
+// --- Exception Count Color ---
+Exception Color =
+IF( [Exception Count] = 0, "#107C10", "#D13438" )
+
+// --- Budget Variance Color ---
+Variance Color =
+IF( [Total Budget Variance] >= 0, "#107C10", "#D13438" )
+
+// ============================================================
+// DYNAMIC TITLES
+// ============================================================
+
+// --- Dashboard Title with Selected Period ---
+Dashboard Title =
+"Financial Reconciliation Dashboard | "
+& SELECTEDVALUE( dim_calendar[month_name], "All Months" )
+& " "
+& SELECTEDVALUE( dim_calendar[year_number], "All Years" )
+
+// --- KPI Subtitle ---
+KPI Subtitle =
+"As of " & FORMAT( MAX( fact_reconciliation_results[recon_date] ), "DD MMM YYYY" )
+& " | Data refreshed daily via Alteryx"
+
+// ============================================================
+// POWER QUERY M — TRANSFORMATION REFERENCE
+// ============================================================
+// Note: The following M code should be applied in
+// Power Query Editor when importing data sources
+//
+// let
+//     Source = Csv.Document(
+//         File.Contents("data\output\reconciled_transactions.csv"),
+//         [Delimiter=",", Columns=15, Encoding=1252, QuoteStyle=QuoteStyle.None]
+//     ),
+//     PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+//     ChangedTypes = Table.TransformColumnTypes(PromotedHeaders, {
+//         {"transaction_date",  type date},
+//         {"sap_amount",        type number},
+//         {"bank_amount",       type number},
+//         {"variance_amount",   type number},
+//         {"match_score",       Int64.Type},
+//         {"is_duplicate",      type logical}
+//     }),
+//     FilteredRows = Table.SelectRows(
+//         ChangedTypes,
+//         each [match_status] <> null and [match_status] <> ""
+//     )
+// in
+//     FilteredRows
